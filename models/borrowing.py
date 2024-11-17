@@ -1,7 +1,7 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
-from config.db import db
 from datetime import datetime, timedelta
+from config import db
 
 class Borrowing(db.Model, SerializerMixin):
     __tablename__ = 'borrowings'
@@ -15,6 +15,7 @@ class Borrowing(db.Model, SerializerMixin):
     date_returned = db.Column(db.Date)
     status = db.Column(db.String, default='Pending')
 
+    # Relationships
     user = relationship('User', back_populates='borrowings')
     book = relationship('LibraryBook', back_populates='borrowings')
 

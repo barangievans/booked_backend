@@ -1,7 +1,7 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
-from config.db import db
 from datetime import datetime
+from config import db
 
 class Sale(db.Model, SerializerMixin):
     __tablename__ = 'sales'
@@ -15,6 +15,7 @@ class Sale(db.Model, SerializerMixin):
     total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String, default='Pending')
 
+    # Relationships
     user = relationship('User', back_populates='sales')
     book = relationship('StoreBook', back_populates='sales')
 

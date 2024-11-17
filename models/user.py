@@ -1,7 +1,7 @@
 from sqlalchemy.orm import validates, relationship
 from sqlalchemy_serializer import SerializerMixin
-from config.db import db
 from flask_bcrypt import Bcrypt
+from config import db
 import re
 
 bcrypt = Bcrypt()
@@ -17,6 +17,7 @@ class User(db.Model, SerializerMixin):
     is_admin = db.Column(db.Boolean, default=False)
     profile_image = db.Column(db.String, nullable=True)
 
+    # Relationships
     borrowings = relationship('Borrowing', back_populates='user', cascade='all, delete-orphan', lazy='joined')
     sales = relationship('Sale', back_populates='user', cascade='all, delete-orphan', lazy='joined')
     cart_items = relationship('CartItem', back_populates='user', cascade='all, delete-orphan', lazy='joined')
