@@ -1,0 +1,54 @@
+name: Backend CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - development
+    paths:
+      - "booked_backend/**"
+
+jobs:
+  backend:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+        working-directory: ./booked_backend
+
+      - name: Run Pytest
+        run: |
+          pipenv run pytest
+        working-directory: ./booked_backend
+
+  merge-main:
+    name: Auto Merge to Main
+    needs: backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge development to main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge origin/development --no-ff -m "Auto-merging development to main after successful deployment"
+          git push origin main
